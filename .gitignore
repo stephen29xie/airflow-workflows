@@ -1,0 +1,104 @@
+# Created by https://www.gitignore.io/api/macos,virtualenv
+# Edit at https://www.gitignore.io/?templates=macos,virtualenv
+
+### macOS ###
+# General
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Icon must end with two \r
+Icon
+
+# Thumbnails
+._*
+
+# Files that might appear in the root of a volume
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+
+# Directories potentially created on remote AFP share
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+.apdisk
+
+### VirtualEnv ###
+# Virtualenv
+# http://iamzed.com/2009/05/07/a-primer-on-virtualenv/
+.Python
+[Bb]in
+[Ii]nclude
+[Ll]ib
+[Ll]ib64
+[Ll]ocal
+[Ss]cripts
+pyvenv.cfg
+.venv
+pip-selfcheck.json
+*venv
+
+# End of https://www.gitignore.io/api/macos,virtualenv
+
+### Python ###
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+
+
+# Airflow configuration
+airflow.cfg
+unittests.cfg
+airflow_login.py
+dbinit.py
+initdb.py
+secrets.py
+
+# Airflow sqlite databases
+airflow.db
+unittests.db
+
+# Airflow temporary artifacts
+airflow/git_version
+airflow/www/static/coverage/
+logs/
+airflow-webserver.pid
+
+
+##########################################################
+
+
+
+.idea
