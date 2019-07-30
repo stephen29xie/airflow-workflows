@@ -1,10 +1,14 @@
+"""
+This DAG pulls news posts from Reddit, summarizes the news article, and inserts the post data, summarized content, and
+other metadata into a Postgres db.
+"""
+
 from configparser import ConfigParser
 import os
 from datetime import datetime, timedelta
 from praw.exceptions import APIException, PRAWException, ClientException
 import logging
 
-from airflow.models import settings, Connection
 from airflow.hooks.postgres_hook import PostgresHook
 from airflow.operators.python_operator import PythonOperator
 from airflow.operators.dummy_operator import DummyOperator
@@ -20,22 +24,6 @@ filepath = os.path.join(current_dir, '../config.ini')
 config = ConfigParser()
 config.read(filepath)
 
-# Create connection to our Postgres instance
-pg_connection = Connection(
-    conn_id=config['Airflow']['postgres_conn_id'],
-    conn_type='Postgres',
-    host=config['Postgres']['host'],
-    login=config['Postgres']['username'],
-    password=config['Postgres']['password'],
-    port=config['Postgres']['port']
-)
-
-# Add the Connection to the Airflow session
-session = settings.Session()
-session.add(pg_connection)
-session.commit()
-session.close()
-
 default_args = {
     'owner': 'Stephen Xie',
     'depends_on_past': False,
@@ -45,10 +33,6 @@ default_args = {
     'email_on_retry': False,
     'retries': 0,
     'retry_delay': timedelta(minutes=1)
-    # 'queue': 'bash_queue',
-    # 'pool': 'backfill',
-    # 'priority_weight': 10,
-    # 'end_date': datetime(2016, 1, 1),
 }
 
 dag = DAG(
@@ -151,9 +135,9 @@ end_task = DummyOperator(task_id='end_dummy',
                          dag=dag)
 
 etl_technews = PythonOperator(task_id='etl_technews',
-                                     python_callable=reddit_etl_callable,
-                                     provide_context=True,
-                                     op_kwargs={'subreddit': 'technews'},
-                                     dag=dag)
+                              python_callable=reddit_etl_callable,
+                              provide_context=True,
+                              op_kwargs={'subreddit': 'technews'},
+                              dag=dag)
 
 start_task >> etl_technews >> end_task
