@@ -6,5 +6,5 @@ Apache Airflow workflows
 
 # TO DO
 * SLAs
-* email notifications on task fails and SLA misses
 * Investigate Reddit functionality (should I be getting data from top, hot, new, etc.?). And also look into downvotes.
+* replace SMMRY with news-please and another summarizer model
