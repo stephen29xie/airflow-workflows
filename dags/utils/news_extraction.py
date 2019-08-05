@@ -25,6 +25,7 @@ def extract_news(url):
     news['image_url'] = article.image_url
     news['language'] = article.language
     news['text'] = article.text
+    news['word_count'] = len(article.text.split(' '))
 
     return news
 
