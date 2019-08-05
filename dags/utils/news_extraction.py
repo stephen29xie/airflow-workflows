@@ -25,14 +25,14 @@ def extract_news(url):
     news['image_url'] = article.image_url
     news['language'] = article.language
     news['text'] = article.text
-    news['url'] = article.url
 
     return news
 
 
 def validate_extracted_news(news):
     """
-    Validates the extracted news from a website by checking if it successfully extracted a title and text.
+    Validates the extracted news from a website by checking if it successfully extracted a title and text, and if is
+    in english
 
     :param news: dict - extracted news data
     :return: bool
@@ -42,6 +42,8 @@ def validate_extracted_news(news):
     if news['title'] is None:
         return False
     elif news['text'] is None:
+        return False
+    elif news['language'] is not None and news['language'] != 'en':
         return False
     else:
         return True
