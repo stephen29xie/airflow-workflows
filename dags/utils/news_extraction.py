@@ -19,7 +19,7 @@ def extract_news(url):
 
     news['title'] = article.title
     news['description'] = article.description
-    news['authors'] = article.authors
+    news['authors'] = ', '.join(article.authors)
     news['source_domain'] = article.source_domain
     news['date_publish'] = article.date_publish
     news['image_url'] = article.image_url

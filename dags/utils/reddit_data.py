@@ -35,7 +35,7 @@ def get_reddit_posts(subreddit):
                          user_agent=config['Reddit']['user_agent'])
 
     # get hottest posts from all subreddits
-    hot_posts = reddit.subreddit(subreddit).top(limit=4)
+    hot_posts = reddit.subreddit(subreddit).hot(limit=10)
 
     posts = []
     for post in hot_posts:
@@ -44,14 +44,11 @@ def get_reddit_posts(subreddit):
         json['fullname'] = post.fullname
         json['title'] = post.title
         json['url'] = post.url
-        json['upvotes'] = post.ups
-        json['downvotes'] = post.downs
         json['score'] = post.score
         json['thumbnail_url'] = post.thumbnail
         json['url_domain'] = post.domain
         json['num_comments'] = post.num_comments
         # cast epoch times to datetimes
-        json['post_datetime'] = datetime.datetime.fromtimestamp(post.created).strftime('%Y-%m-%d %H:%M:%S')
         json['post_datetime_utc'] = datetime.datetime.fromtimestamp(post.created_utc).strftime('%Y-%m-%d %H:%M:%S')
 
         posts.append(json)

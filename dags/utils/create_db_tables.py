@@ -46,16 +46,17 @@ def create_reddit_summary_table(table_name):
                           url VARCHAR(200) NOT NULL,\
                           url_domain VARCHAR(200) NOT NULL,\
                           thumbnail_url VARCHAR,\
-                          upvotes INT NOT NULL,\
-                          downvotes INT NOT NULL,\
                           score INT NOT NULL,\
                           num_comments INT NOT NULL,\
-                          post_datetime TIMESTAMP NOT NULL,\
-                          post_datetime_uct TIMESTAMP NOT NULL,\
-                          smmry_character_count INT NOT NULL,\
-                          smmry_content_reduced FLOAT NOT NULL,\
-                          smmry_title VARCHAR NOT NULL,\
-                          smmry_content TEXT NOT NULL)".format(table_name)
+                          post_datetime_utc TIMESTAMP NOT NULL,\
+                          news_title VARCHAR NOT NULL,\
+                          news_description TEXT,\
+                          news_author VARCHAR,\
+                          news_domain VARCHAR,\
+                          news_date_publish TIMESTAMP,\
+                          news_image_url VARCHAR,\
+                          news_text TEXT NOT NULL,\
+                          news_word_count INT NOT NULL)".format(table_name)
 
     try:
         engine = create_engine(SQLALCHEMY_DATABASE_URI, echo=True)
@@ -65,6 +66,7 @@ def create_reddit_summary_table(table_name):
         print(err)
     finally:
         connection.close()
+
 
 if __name__ == '__main__':
     create_reddit_summary_table('posts_prod')
