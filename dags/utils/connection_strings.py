@@ -21,10 +21,10 @@ def get_postgres_connection_string():
     config.read(filepath)
 
     conn_string = 'postgresql+psycopg2://{}:{}@{}/{}'.format(
-        config['Postgres Metadata Database']['username'],
-        config['Postgres Metadata Database']['password'],
-        config['Postgres Metadata Database']['host'],
-        config['Postgres Metadata Database']['dbname'])
+        config['postgres_metadata_db']['username'],
+        config['postgres_metadata_db']['password'],
+        config['postgres_metadata_db']['host'],
+        config['postgres_metadata_db']['dbname'])
 
     return conn_string
 

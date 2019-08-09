@@ -1,5 +1,5 @@
 """
-This DAG pulls news posts from Reddit, summarizes the news article, and inserts the post data, summarized content, and
+This DAG pulls news posts from Reddit, extracts the news content, and inserts the post data, news content, and
 other metadata into a Postgres db.
 """
 
@@ -63,9 +63,20 @@ def format_postgres_string(string):
 
 
 def reddit_etl_callable(subreddit, **kwargs):
+    """
+    This is the function that will be called in the PythonOperator. It fetches posts which contain news links from
+    the specified subreddit, extracts the news from its webpage, and inserts the news, reddit post data, and other
+    metadata into a Postgres db.
+
+    :param subreddit: The subreddit to fetch posts(news) from
+    :return: None
+    """
+
+    # Initialize Postgres Hook
     postgres_hook = PostgresHook(postgres_conn_id=config['Airflow']['postgres_conn_id'],
                                  schema=config['Postgres']['dbname'])
 
+    # Initialize connection and cursor
     postgres_hook_conn = postgres_hook.get_conn()
     postgres_hook_cur = postgres_hook_conn.cursor()
 
@@ -85,13 +96,13 @@ def reddit_etl_callable(subreddit, **kwargs):
     insertions = 0
     invalid_posts = 0
 
-    # If we fetch a post that we have already fetched before, we will just update the score, upvotes, downvotes, and.
-    # number of parent comments. All the other information is the same
+    # If we fetch a post that we have already fetched before, we will just update the score and number of comments.
+    # All of the other information is the same
     for post in reddit_posts:
 
         logging.info('Attempting to process post ' + post['fullname'] + '...')
 
-        # validate the reddit post to see if it has all the required information we want. If not we wont use it
+        # validate the reddit post to see if it has all the required information we want. If not valid, continue.
         if not validate_reddit_post(post):
             logging.info('Reddit post not valid')
             invalid_posts += 1
@@ -105,7 +116,7 @@ def reddit_etl_callable(subreddit, **kwargs):
             invalid_posts += 1
             continue
 
-        # validate news
+        # validate news. If not valid, continue to next post
         if not validate_extracted_news(news):
             logging.info('Extracted news not valid, will not be stored')
             invalid_posts += 1
@@ -146,6 +157,7 @@ def reddit_etl_callable(subreddit, **kwargs):
         logging.info('Successfully processed and inserted post ' + post['fullname'])
         insertions += 1
 
+    # Close cursor and connection
     postgres_hook_cur.close()
     postgres_hook_conn.close()
     logging.info('Successfully processed and inserted {} posts to the database. Unable to insert {} posts'.format(insertions,
@@ -164,4 +176,10 @@ etl_technews = PythonOperator(task_id='etl_technews',
                               op_kwargs={'subreddit': 'technews'},
                               dag=dag)
 
-start_task >> etl_technews >> end_task
+etl_technology = PythonOperator(task_id='etl_technology',
+                              python_callable=reddit_etl_callable,
+                              provide_context=True,
+                              op_kwargs={'subreddit': 'technology'},
+                              dag=dag)
+
+start_task >> [etl_technews, etl_technology] >> end_task
