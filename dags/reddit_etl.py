@@ -174,12 +174,14 @@ etl_technews = PythonOperator(task_id='etl_technews',
                               python_callable=reddit_etl_callable,
                               provide_context=True,
                               op_kwargs={'subreddit': 'technews'},
+                              sla=timedelta(minutes=2),
                               dag=dag)
 
 etl_technology = PythonOperator(task_id='etl_technology',
-                              python_callable=reddit_etl_callable,
-                              provide_context=True,
-                              op_kwargs={'subreddit': 'technology'},
-                              dag=dag)
+                                python_callable=reddit_etl_callable,
+                                provide_context=True,
+                                op_kwargs={'subreddit': 'technology'},
+                                sla=timedelta(minutes=2),
+                                dag=dag)
 
 start_task >> [etl_technews, etl_technology] >> end_task
