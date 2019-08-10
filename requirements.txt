@@ -4,3 +4,4 @@ Flask==1.0.4
 psycopg2==2.8.3
 sqlalchemy==1.2.19
 requests==2.22.0
+news-please==1.4.21
