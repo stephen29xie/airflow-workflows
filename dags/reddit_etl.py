@@ -74,7 +74,7 @@ def reddit_etl_callable(subreddit, **kwargs):
 
     # Initialize Postgres Hook
     postgres_hook = PostgresHook(postgres_conn_id=config['Airflow']['postgres_conn_id'],
-                                 schema=config['Postgres']['dbname'])
+                                 schema=config['reddit_news_db']['dbname'])
 
     # Initialize connection and cursor
     postgres_hook_conn = postgres_hook.get_conn()
@@ -133,7 +133,7 @@ def reddit_etl_callable(subreddit, **kwargs):
                     ON CONFLICT (fullname) \
                     DO UPDATE \
                     SET score = {score},\
-                        num_comments = {num_comments}".format(table=config['Postgres']['table'],
+                        num_comments = {num_comments}".format(table=config['reddit_news_db']['table'],
                                                               fullname=format_postgres_string(post['fullname']),
                                                               subreddit=format_postgres_string(subreddit),
                                                               title=format_postgres_string(post['title']),

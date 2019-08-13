@@ -73,10 +73,10 @@ create_postgres_connection = PythonOperator(task_id='create_postgres_connection'
                                             python_callable=create_postgres_connection,
                                             op_kwargs={
                                                 'conn_id': config['Airflow']['postgres_conn_id'],
-                                                'host': config['Postgres']['host'],
-                                                'login': config['Postgres']['username'],
-                                                'password': config['Postgres']['password'],
-                                                'port': config['Postgres']['port']
+                                                'host': config['reddit_news_db']['host'],
+                                                'login': config['reddit_news_db']['username'],
+                                                'password': config['reddit_news_db']['password'],
+                                                'port': config['reddit_news_db']['port']
                                             },
                                             provide_context=True,
                                             dag=dag)

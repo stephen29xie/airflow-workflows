@@ -30,9 +30,9 @@ def get_reddit_posts(subreddit):
     config = ConfigParser()
     config.read(filepath)
 
-    reddit = praw.Reddit(client_id=config['Reddit']['client_id'],
-                         client_secret=config['Reddit']['client_secret'],
-                         user_agent=config['Reddit']['user_agent'])
+    reddit = praw.Reddit(client_id=config['reddit']['client_id'],
+                         client_secret=config['reddit']['client_secret'],
+                         user_agent=config['reddit']['user_agent'])
 
     # get hottest posts from all subreddits
     hot_posts = reddit.subreddit(subreddit).top(time_filter='hour', limit=15)
@@ -74,4 +74,4 @@ def validate_reddit_post(post):
 
 
 if __name__ == '__main__':
-    print(get_reddit_posts('technews'))
+    print(get_reddit_posts('technology'))

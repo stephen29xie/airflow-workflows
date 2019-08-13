@@ -22,10 +22,10 @@ def get_connection_string():
     config.read(filepath)
 
     CONNECTION_URI = 'postgresql+psycopg2://{}:{}@/{}?host={}'.format(
-        config['Postgres']['username'],
-        config['Postgres']['password'],
-        config['Postgres']['dbname'],
-        config['Postgres']['host'])
+        config['reddit_news_db']['username'],
+        config['reddit_news_db']['password'],
+        config['reddit_news_db']['dbname'],
+        config['reddit_news_db']['host'])
 
     return CONNECTION_URI
 
