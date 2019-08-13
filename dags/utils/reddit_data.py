@@ -35,7 +35,7 @@ def get_reddit_posts(subreddit):
                          user_agent=config['Reddit']['user_agent'])
 
     # get hottest posts from all subreddits
-    hot_posts = reddit.subreddit(subreddit).hot(limit=10)
+    hot_posts = reddit.subreddit(subreddit).top(time_filter='hour', limit=15)
 
     posts = []
     for post in hot_posts:
