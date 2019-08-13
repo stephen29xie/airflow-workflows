@@ -8,6 +8,8 @@ echo "$AIRFLOW_HOME"
 
 airflow initdb
 
+python web_authentication_setup.py
+
 airflow webserver --port 8080 & airflow scheduler &
 
 # Useful commands
