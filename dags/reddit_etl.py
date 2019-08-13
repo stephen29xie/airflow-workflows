@@ -43,25 +43,6 @@ dag = DAG(
 )
 
 
-def format_postgres_string(string):
-    """
-    PostgreSQL syntax has some intricacies that we must follow when formatting query strings.
-    "%", and "'" must be escaped or they will be interpreted as some other functionality that is not a
-    string literal.
-
-    This function takes in a string that is meant to be formatted into a PostgreSQL query and returns the modified
-    string safe to format into a query
-
-    :param string: the string meant to be formatted into the PostgreSQL query
-    :return: str or None
-    """
-
-    if string is None:
-        return None
-    else:
-        return string.replace("'", "''").replace('%', '%%')
-
-
 def reddit_etl_callable(subreddit, **kwargs):
     """
     This is the function that will be called in the PythonOperator. It fetches posts which contain news links from
@@ -123,36 +104,35 @@ def reddit_etl_callable(subreddit, **kwargs):
             continue
 
         # If it exists already, update the votes and number of comments.
-        # Replace % with %% and ' with '' to escape these special characters in the query string
-        QUERY = "INSERT INTO {table}\
-                    VALUES (\'{fullname}\', \'{subreddit}\', \'{title}\', \'{url}\', \'{url_domain}\',\
-                            \'{thumbnail_url}\', {score}, {num_comments},\
-                            \'{post_datetime_utc}\', \'{news_title}\', \'{news_description}\', \'{news_authors}\',\
-                            \'{news_source_domain}\', \'{news_date_publish}\', \'{news_image_url}\', \'{news_text}\',\
-                            {news_word_count})\
-                    ON CONFLICT (fullname) \
-                    DO UPDATE \
-                    SET score = {score},\
-                        num_comments = {num_comments}".format(table=config['reddit_news_db']['table'],
-                                                              fullname=format_postgres_string(post['fullname']),
-                                                              subreddit=format_postgres_string(subreddit),
-                                                              title=format_postgres_string(post['title']),
-                                                              url=format_postgres_string(post['url']),
-                                                              url_domain=format_postgres_string(post['url_domain']),
-                                                              thumbnail_url=format_postgres_string(post['thumbnail_url']),
-                                                              score=post['score'],
-                                                              num_comments=post['num_comments'],
-                                                              post_datetime_utc=post['post_datetime_utc'],
-                                                              news_title=format_postgres_string(news['title']),
-                                                              news_description=format_postgres_string(news['description']),
-                                                              news_authors=format_postgres_string(news['authors']),
-                                                              news_source_domain=format_postgres_string(news['source_domain']),
-                                                              news_date_publish=news['date_publish'],
-                                                              news_image_url=format_postgres_string(news['image_url']),
-                                                              news_text=format_postgres_string(news['text']),
-                                                              news_word_count=news['word_count'])
+        QUERY = """
+                INSERT INTO {table}
+                            VALUES (%(fullname)s, %(subreddit)s, %(title)s, %(url)s, %(url_domain)s,
+                                    %(thumbnail_url)s, %(score)s, %(num_comments)s, %(post_datetime_utc)s, 
+                                    %(news_title)s, %(news_description)s, %(news_authors)s, %(news_source_domain)s, 
+                                    %(news_date_publish)s, %(news_image_url)s, %(news_text)s, %(news_word_count)s) 
+                            ON CONFLICT (fullname) 
+                            DO UPDATE 
+                            SET score = %(score)s, num_comments = %(num_comments)s;
+                """.format(table=config['reddit_news_db']['table'])
 
-        postgres_hook_cur.execute(QUERY)
+        postgres_hook_cur.execute(QUERY, {'fullname': post['fullname'],
+                                          'subreddit': subreddit,
+                                          'title': post['title'],
+                                          'url': post['url'],
+                                          'url_domain': post['url_domain'],
+                                          'thumbnail_url': post['thumbnail_url'],
+                                          'score': post['score'],
+                                          'num_comments': post['num_comments'],
+                                          'post_datetime_utc': post['post_datetime_utc'],
+                                          'news_title': news['title'],
+                                          'news_description': news['description'],
+                                          'news_authors': news['authors'],
+                                          'news_source_domain': news['source_domain'],
+                                          'news_date_publish': news['date_publish'],
+                                          'news_image_url': news['image_url'],
+                                          'news_text': news['text'],
+                                          'news_word_count': news['word_count']})
+
         postgres_hook_conn.commit()
         logging.info('Successfully processed and inserted post ' + post['fullname'])
         insertions += 1
