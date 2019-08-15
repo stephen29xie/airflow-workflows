@@ -43,8 +43,8 @@ def create_reddit_summary_table(table_name):
                           fullname VARCHAR PRIMARY KEY,\
                           subreddit VARCHAR(50) NOT NULL,\
                           post_title VARCHAR(500) NOT NULL,\
-                          url VARCHAR(200) NOT NULL,\
-                          url_domain VARCHAR(200) NOT NULL,\
+                          url VARCHAR NOT NULL,\
+                          url_domain VARCHAR(50) NOT NULL,\
                           thumbnail_url VARCHAR,\
                           score INT NOT NULL,\
                           num_comments INT NOT NULL,\
