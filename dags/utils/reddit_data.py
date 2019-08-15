@@ -1,10 +1,14 @@
+"""
+Contains a function to fetch and validate posts from a subreddit from reddit
+"""
+
 import os
 import praw
 from configparser import ConfigParser
 import datetime
 
 
-def get_reddit_posts(subreddit):
+def get_reddit_posts(subreddit, sort, limit=30):
     """
     Makes requests to the Reddit API (PRAW) to query for the top 10 hottest posts in the specified subreddit
 
@@ -17,8 +21,10 @@ def get_reddit_posts(subreddit):
     Meaning the runtime is max(api_delay, code execution time)
 
 
-    :param subreddit: Str - the subreddit we want to get data from
-    :return: List[Dict] - list of Dictionaries, each one representing a Reddit post. Each dict contains an id, title,
+    :param subreddit: str - the subreddit we want to get data from
+    :param sort: str - one of 'hot', 'top_day', 'top_hour' or 'rising'
+    :param limit: int - number of posts to fetch
+    :return: list[dict] - list of Dictionaries, each one representing a Reddit post. Each dict contains an id, title,
              url, score, thumbnail url, url domain, num comments, and posting time.
     """
 
@@ -34,11 +40,20 @@ def get_reddit_posts(subreddit):
                          client_secret=config['reddit']['client_secret'],
                          user_agent=config['reddit']['user_agent'])
 
-    # get hottest posts from all subreddits
-    hot_posts = reddit.subreddit(subreddit).top(time_filter='hour', limit=15)
+    # get posts by sort method
+    if sort == 'hot':
+        fetched_posts = reddit.subreddit(subreddit).hot(limit=limit)
+    elif sort == 'top_hour':
+        fetched_posts = reddit.subreddit(subreddit).top(time_filter='hour', limit=limit)
+    elif sort == 'top_day':
+        fetched_posts = reddit.subreddit(subreddit).top(time_filter='day', limit=limit)
+    elif sort == 'rising':
+        fetched_posts = reddit.subreddit(subreddit).rising(limit=limit)
+    else:
+        raise ValueError("sort parameter must be one of 'hot', 'top_day','top_hour', or 'rising'")
 
     posts = []
-    for post in hot_posts:
+    for post in fetched_posts:
         # Create a dictionary object for each post.
         json = {}
         json['fullname'] = post.fullname
@@ -61,7 +76,7 @@ def validate_reddit_post(post):
     If a reddit post does not provide an external link, or does not provide a link at all, return False.
     Else return True.
 
-    :param post:
+    :param post: dict - contains the extracted reddit post information
     :return: Bool
     """
 
@@ -74,4 +89,4 @@ def validate_reddit_post(post):
 
 
 if __name__ == '__main__':
-    print(get_reddit_posts('technology'))
+    print(get_reddit_posts('technology', sort='hot', limit=30))

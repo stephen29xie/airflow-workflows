@@ -43,13 +43,14 @@ dag = DAG(
 )
 
 
-def reddit_etl_callable(subreddit, **kwargs):
+def reddit_etl_callable(subreddit, sort, **kwargs):
     """
     This is the function that will be called in the PythonOperator. It fetches posts which contain news links from
     the specified subreddit, extracts the news from its webpage, and inserts the news, reddit post data, and other
     metadata into a Postgres db.
 
     :param subreddit: The subreddit to fetch posts(news) from
+    :param sort: sort method for subreddit posts
     :return: None
     """
 
@@ -62,7 +63,7 @@ def reddit_etl_callable(subreddit, **kwargs):
     postgres_hook_cur = postgres_hook_conn.cursor()
 
     try:
-        reddit_posts = get_reddit_posts(subreddit)
+        reddit_posts = get_reddit_posts(subreddit, sort=sort)
         logging.info('Succesfully downloaded posts from Reddit')
     except APIException:
         logging.error('Encountered Praw APIException. Error occured trying to fetch posts from Reddit')
@@ -153,14 +154,16 @@ end_task = DummyOperator(task_id='end_dummy',
 etl_technews = PythonOperator(task_id='etl_technews',
                               python_callable=reddit_etl_callable,
                               provide_context=True,
-                              op_kwargs={'subreddit': 'technews'},
+                              op_kwargs={'subreddit': 'technews',
+                                         'sort': 'hot'},
                               sla=timedelta(minutes=2),
                               dag=dag)
 
 etl_technology = PythonOperator(task_id='etl_technology',
                                 python_callable=reddit_etl_callable,
                                 provide_context=True,
-                                op_kwargs={'subreddit': 'technology'},
+                                op_kwargs={'subreddit': 'technology',
+                                           'sort': 'hot'},
                                 sla=timedelta(minutes=2),
                                 dag=dag)
 
