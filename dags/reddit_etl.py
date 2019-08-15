@@ -64,7 +64,7 @@ def reddit_etl_callable(subreddit, sort, **kwargs):
 
     try:
         reddit_posts = get_reddit_posts(subreddit, sort=sort)
-        logging.info('Succesfully downloaded posts from Reddit')
+        logging.info('Succesfully downloaded {} posts from {} subreddit'.format(sort, subreddit))
     except APIException:
         logging.error('Encountered Praw APIException. Error occured trying to fetch posts from Reddit')
         reddit_posts = []
