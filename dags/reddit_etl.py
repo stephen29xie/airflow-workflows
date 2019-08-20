@@ -29,7 +29,7 @@ default_args = {
     'depends_on_past': False,
     'start_date': datetime(2019, 6, 20),
     'email': ['stephen29xie@gmail.com'],
-    'email_on_failure': False,
+    'email_on_failure': True,
     'email_on_retry': False,
     'retries': 0,
     'retry_delay': timedelta(minutes=1)
@@ -156,7 +156,7 @@ etl_technews = PythonOperator(task_id='etl_technews',
                               provide_context=True,
                               op_kwargs={'subreddit': 'technews',
                                          'sort': 'hot'},
-                              sla=timedelta(minutes=2),
+                              sla=timedelta(minutes=4),
                               dag=dag)
 
 etl_technology = PythonOperator(task_id='etl_technology',
@@ -164,7 +164,7 @@ etl_technology = PythonOperator(task_id='etl_technology',
                                 provide_context=True,
                                 op_kwargs={'subreddit': 'technology',
                                            'sort': 'hot'},
-                                sla=timedelta(minutes=2),
+                                sla=timedelta(minutes=4),
                                 dag=dag)
 
 start_task >> [etl_technews, etl_technology] >> end_task
