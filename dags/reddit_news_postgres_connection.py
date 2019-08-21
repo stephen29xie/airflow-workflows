@@ -54,7 +54,7 @@ def create_postgres_connection(conn_id, host, login, password, port=5432, **kwar
     # Create connection to our Postgres instance
     pg_connection = Connection(
         conn_id=conn_id,
-        conn_type='Postgres',
+        conn_type='postgres',
         host=host,
         login=login,
         password=password,
