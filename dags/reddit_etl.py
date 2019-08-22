@@ -78,6 +78,8 @@ def reddit_etl_callable(subreddit, sort, **kwargs):
     insertions = 0
     invalid_posts = 0
 
+    current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+
     # If we fetch a post that we have already fetched before, we will just update the score and number of comments.
     # All of the other information is the same
     for post in reddit_posts:
@@ -110,13 +112,15 @@ def reddit_etl_callable(subreddit, sort, **kwargs):
                             VALUES (%(fullname)s, %(subreddit)s, %(title)s, %(url)s, %(url_domain)s,
                                     %(thumbnail_url)s, %(score)s, %(num_comments)s, %(post_datetime_utc)s, 
                                     %(news_title)s, %(news_description)s, %(news_authors)s, %(news_source_domain)s, 
-                                    %(news_date_publish)s, %(news_image_url)s, %(news_text)s, %(news_word_count)s) 
+                                    %(news_date_publish)s, %(news_image_url)s, %(news_text)s, %(news_word_count)s,
+                                    %(creation_datetime)s) 
                             ON CONFLICT (fullname) 
                             DO UPDATE 
                             SET score = %(score)s, num_comments = %(num_comments)s;
                 """.format(table=config['reddit_news_db']['table'])
 
         postgres_hook_cur.execute(QUERY, {'fullname': post['fullname'],
+                                          'creation_datetime': current_time,
                                           'subreddit': subreddit,
                                           'title': post['title'],
                                           'url': post['url'],

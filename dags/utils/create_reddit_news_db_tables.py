@@ -56,7 +56,8 @@ def create_reddit_summary_table(table_name):
                           news_date_publish TIMESTAMP,\
                           news_image_url VARCHAR,\
                           news_text TEXT NOT NULL,\
-                          news_word_count INT NOT NULL)".format(table_name)
+                          news_word_count INT NOT NULL,\
+                          creation_datetime TIMESTAMP)".format(table_name)
 
     try:
         engine = create_engine(SQLALCHEMY_DATABASE_URI, echo=True)
