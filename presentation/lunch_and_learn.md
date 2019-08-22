@@ -127,7 +127,7 @@ From: https://medium.com/snaptravel/airflow-part-2-lessons-learned-793fa3c0841e
 
 1. **Scheduler**
 	
-	The scheduler reads from the metadata database and checks the status of tasks and decides what needs to be done and in what order. The scheduler has a "heartbeat", and at each heartbeat it loads all the DAGs again to run. The default value is a heartbeat every 5 seconds and any new development changes will be picked up.
+	The scheduler reads from the metadata database and checks the status of tasks and decides what needs to be done and in what order. The scheduler has a "heartbeat", and at each heartbeat it loads all the DAGs again to run. The default value is a heartbeat every 5 seconds and any new development changes will be picked up if there are any. This makes integrating new code seamless.
 
 1. **Executor**
 
