@@ -10,9 +10,9 @@
 
 Open Source workflow management system in use at Airbnb, Google, Lyft, PayPal, Reddit, Intel, Square, Walmart and Twitter, among others.
 
-A workflow, in general terms, is simply a sequence of tasks or processes, commonly executed in regular schedules. In data applications, workflows can be data warehousing procedures, computing timed metrics, A/B testing, and more. 
+A workflow, in general terms, is simply a sequence of tasks or processes, commonly executed in regular schedules. In data applications, workflows can be data warehousing procedures, computing timed metrics, A/B testing, and more. Airflow is a good solution to automate batch processes. Workflows are expected to be mostly static (perform the same procedures every time).
 
-Airflow *is not* a data streaming solution. Workflows are expected to be mostly static (perform the same procedures every time). Airflow is a good solution to automate batch processes.
+Airflow *is not* a data streaming solution. 
 
 Airflow was created by Maxime Beauchemin at Airbnb in 2014. The project joined the Apache Software Foundation's Incubator program in 2016 and was announced as an Apache Top-Level Project (TLP) in Jan 2019.
  
@@ -31,7 +31,9 @@ Workflows are created as DAGs. Every workflow you implement is a separate DAG. N
     <img src="images/DAG.png" width="75%" height="75%">
 </p>
 
-We implement tasks as standalone, loosely-coupled, idempotent pieces of code. Each task does something specific. Then we define the dependencies of tasks. Airflow abstracts task implementation using objects called Operators. Tasks are simply instances of Operators. These are the building blocks of Airflow workflows.
+We implement tasks as standalone, loosely-coupled, idempotent pieces of code. Each task does something specific. Then we define the dependencies of tasks. 
+
+Airflow abstracts task implementation using objects called Operators. Tasks are simply instances of Operators. These are the building blocks of Airflow workflows.
 
 So while DAGs describe *how* to run a workflow, **Operators** define what is actually done.
 
@@ -66,7 +68,7 @@ One of the selling points of Airflow is being able to concisely define dependenc
 Trigger rules determine when a task is executed. The default behaviour is to run a task when all directly upstream tasks have succeeded, but more complex dependency settings are available.
 
 <p align="center"> 
-	<img src="images/trigger_rules.png" width="75%" height="75%"> 
+	<img src="images/trigger_rules.png" width="75%" height="75%">
 </p>
 
 Airflow also has a feature called **XCOM** (Cross Communication), which allows communication between tasks. This can be useful for dynamic tasks where the output is variable and proceeding tasks depend on the outcome of that task.
