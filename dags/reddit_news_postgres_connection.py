@@ -37,12 +37,13 @@ dag = DAG(
 )
 
 
-def create_postgres_connection(conn_id, host, login, password, port=5432, **kwargs):
+def create_postgres_connection(conn_id, host, schema, login, password, port=5432, **kwargs):
     """
     Creates a Postgres Connection (for Hooks to use) for the Airflow session
 
     :param conn_id: Str - name of Airflow Connection
     :param host: Str - db host
+    :param schema: Str - db name
     :param login: Str - db login
     :param password: Str - db password
     :param port: Str - db port
@@ -56,6 +57,7 @@ def create_postgres_connection(conn_id, host, login, password, port=5432, **kwar
         conn_id=conn_id,
         conn_type='postgres',
         host=host,
+        schema=schema,
         login=login,
         password=password,
         port=port
@@ -74,6 +76,7 @@ create_postgres_connection = PythonOperator(task_id='create_postgres_connection'
                                             op_kwargs={
                                                 'conn_id': config['Airflow']['postgres_conn_id'],
                                                 'host': config['reddit_news_db']['host'],
+                                                'schema': config['reddit_news_db']['dbname'],
                                                 'login': config['reddit_news_db']['username'],
                                                 'password': config['reddit_news_db']['password'],
                                                 'port': config['reddit_news_db']['port']
