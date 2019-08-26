@@ -16,7 +16,7 @@ Airflow *is not* a data streaming solution.
 
 Airflow was created by Maxime Beauchemin at Airbnb in 2014. The project joined the Apache Software Foundation's Incubator program in 2016 and was announced as an Apache Top-Level Project (TLP) in Jan 2019.
  
-## Airflow paradigm
+## Airflow Programming Model
 Airflow is written in Python from the ground up. Airflow has a selling point of "configuration as code". As long as you can run Python, you will be able to author and execute Airflow workflows. This is a huge advantage if you already use a Python stack. 
 
 This is opposed to other workflow management frameworks where your task logic is implemented in code but scheduling and configuration is separate. 
@@ -60,8 +60,8 @@ Additional functionality (there is much more than these two):
 Airflow is highly extensible. In addition to what is available out-of-the-box, you can extend the base classes to implement your own. As you create more Operators, Sensors, Hooks, and more, you will have a toolbox of these building blocks that are reusable for any other DAG you want to create.
 
 
-## Dependency Management. 
-One of the selling points of Airflow is being able to concisely define dependencies between tasks.
+## State and Dependency Management. 
+One of the selling points of Airflow is being able to concisely define dependencies between tasks. Simpler dependencies can be defined in as little as a one line of code. Tasks have a **state** (queued, running, success, fail, etc.) and these can be used to define even more specific dependencies. 
 
 **Trigger Rules**:
 
@@ -75,7 +75,7 @@ Airflow also has a feature called **XCOM** (Cross Communication), which allows c
 
 ## Alerting (Task Fails & Service Level Agreements)
 
-Alerts can be delivered by email or Slack when tasks fail or Service Level Agreements are not reached.
+SLAs (Service Level Agreements) are defined at a task level and defines an amount of time in which the task should be completed. Alerts can be delivered by email or Slack when tasks fail or Service Level Agreements are not reached.
 
 ## Examples
 
@@ -85,9 +85,9 @@ Alerts can be delivered by email or Slack when tasks fail or Service Level Agree
 
 Another optional feature of Airflow is called Backfill. As we saw in the code, when DAGs are defined, we provide a `start_date`, possibly an `end_date`, and a `schedule interval`. Eg. if we have a daily DAG starting on 2019-01-01 and it ends on 2019-02-01, then the DAG will run 31 times, and hence we have 31 intervals. 
 
-The scheduler will kick off a DAG Run for any interval that has not yet been run. So if this DAG were picked up on 2019-01-10, it would first backfill the first 10 days of January and kick off 10 DAG Runs even though that time has already passed. 
+The scheduler will kick off a DAG Run for any interval that has not yet been run. So if this DAG were picked up on 2019-01-10, it would first *backfill* the first 10 days of January and kick off 10 DAG Runs even though that time has already passed. 
 
-You can turn Catchup on and off depending on your use case and if you need it.
+You can turn catchup on and off depending on your use case and if you need it.
 
 ## Common Workflow patterns
 
